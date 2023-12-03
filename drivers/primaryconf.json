@@ -1,0 +1,20 @@
+{
+    "rgbleds": [
+        ["LED L-L", "color"],
+        ["LED L-R", "color"],
+        ["LED R-L", "color"],
+        ["LED R-R", "color"],
+        ["LED F-L", "color"],
+        ["LED F-R", "color"],
+        ["TSIG L", "color1"],
+        ["TSIG L", "color2"],
+        ["TSIG L", "color3"],
+        ["TSIG L", "color4"],
+        ["TSIG R", "color1"],
+        ["TSIG R", "color2"],
+        ["TSIG R", "color3"],
+        ["TSIG R", "color4"],
+        ["DEKKER", "color"]
+    ]
+
+}
