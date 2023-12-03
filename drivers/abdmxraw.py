@@ -30,7 +30,9 @@ class physical_driver:
                 print("[abdmxraw] set", channel, int(value))
             self.chval[channel] = int(value)
             if self.portnumber != -1:
-                self.port.write(bytearray([0, int(channel), int(value)]))
+                checksum = (int(channel) % 16 + int(channel) // 16 + int(value) % 16 + int(value) // 16) % 16
+                self.port.write(bytearray([checksum, int(channel), int(value)]))
+                #time.sleep(0.01)
         else:
             if self.logoutput == 1:
                 print("[abdmxraw] set", channel, int(value), "(skip)")

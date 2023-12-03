@@ -76,15 +76,12 @@ void loop() {
     dh = topc.read();
     da = topc.read();
     dd = topc.read();
-    csum=((((da+dd)& 0b11110000)>>4) + ((da+dd)& 0b00001111))& 0b00001111;
-    if ((dh & 0b00001111) != csum){
-      //Cannot listen to rx while transferring to tx
-      //topc.write((dh&0b11110000)+csum);
-      //たぶんチェックサムのけいさんみすってる
-      //s=0;
+    csum = (( (da & 0xF0) >> 4) + (da & 0x0F) + ( (dd & 0xF0) >> 4) + (dd & 0x0F)) & 0x0F;
+    if ((dh & 0x0F) == csum){
+      cpack += 1;
     }else{
+      cerrpack += 1;
     }
-    cpack += 1;
     dmx_master.setChannelValue (da, dd);      
     digitalWrite(LED_RECEIVE_PIN, LOW);
   }else{
