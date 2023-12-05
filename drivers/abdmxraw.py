@@ -16,7 +16,7 @@ class physical_driver:
             except serial.serialutil.SerialException as e:
                 if loggermethod != None:
                     loggermethod("[abdmxraw] Failed to open " + str(portnum), 1)
-                    loggermethod("[abdmxraw] Hint: Available Ports are: ", [_.device for _ in serial.tools.list_ports.comports()])
+                    loggermethod("[abdmxraw] Hint: Available Ports are: " + ", ".join([_.device for _ in serial.tools.list_ports.comports()]))
                 else:
                     print("[abdmxraw] Failed to open COM" + str(portnum))
                     print("[abdmxraw] Hint: Available Ports are: ", [_.device for _ in serial.tools.list_ports.comports()])

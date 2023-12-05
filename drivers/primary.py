@@ -18,8 +18,6 @@ class primary_driver:
             ["LED L-R", "color"],
             ["LED R-L", "color"],
             ["LED R-R", "color"],
-            ["LED F-L", "color"],
-            ["LED F-R", "color"],
             ["TSIG L", "color1"],
             ["TSIG L", "color2"],
             ["TSIG L", "color3"],
@@ -40,7 +38,7 @@ class primary_driver:
                 if "rgbleds" in fj.keys():
                     if type(fj["rgbleds"]) is list:
                         print(fj["rgbleds"])
-                        self.colorslist == fj["rgbleds"]
+                        self.colorslist = fj["rgbleds"]
     def apiver(self) -> int:
         return 1
     def info(self) -> str:
