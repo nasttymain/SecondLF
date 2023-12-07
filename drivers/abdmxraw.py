@@ -40,3 +40,8 @@ class physical_driver:
         if self.logoutput == 1:
             print("[abdmxraw] get", channel)
         return self.chval[channel]
+    def isremotecontroller(self) -> bool:
+        if self.portnumber == -1:
+            return False
+        else:
+            return True

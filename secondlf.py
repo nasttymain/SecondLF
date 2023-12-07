@@ -140,7 +140,11 @@ def app_draw_screen() -> None:
     g.pos_shiftf(-0.4, 0.0)
     g.text(str(a.controller_app_state["app-tps"]) + " TPS", 1)
     g.pos_shiftf(0.8, 0.0)
-    g.text("⇔  " + str(a.physidev_conf["option"]["port"]), 1)
+    if a.physidev_obj.isremotecontroller() == True:
+        g.text("←-→  " + str(a.physidev_conf["option"]["port"]), 1)
+    else:
+        g.text("←X→  " + str(a.physidev_conf["option"]["port"]), 1)
+        
 
     # COLOR
     g.rgbcolor(a.controller_app_conf["ui-text-color"])
