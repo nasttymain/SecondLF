@@ -37,7 +37,7 @@ class primary_driver:
                 fj = json.load(f)
                 if "rgbleds" in fj.keys():
                     if type(fj["rgbleds"]) is list:
-                        print(fj["rgbleds"])
+                        #print(fj["rgbleds"])
                         self.colorslist = fj["rgbleds"]
     def apiver(self) -> int:
         return 1
