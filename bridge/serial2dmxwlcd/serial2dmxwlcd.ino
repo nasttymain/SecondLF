@@ -11,6 +11,7 @@ LiquidCrystal lcd(4, 5, 6, 7, 8, 9);
 byte lcdmestype = 0;
 unsigned long lcdmestime = 0;
 char vbuf[6];
+char vebuf[6];
 
 // DMXシールドに関する設定
 // https://ssci.to/4274
@@ -30,6 +31,9 @@ DMX_Master dmx_master ( DMX_MASTER_CHANNELS, RXEN_PIN );
 SoftwareSerial topc(RX_PIN, TX_PIN);
 //通信確立フラグ
 byte s = 0;
+//パケットキュー
+byte packs[5];
+byte packc = 0;
 // パケットカウント
 unsigned int cpack = 0;
 unsigned int cerrpack = 0;
@@ -61,30 +65,37 @@ byte csum;
 void loop() {
   if (s==0){
     // 通信が確立されていない場合
-    if ((millis() & 512) == 512){
-      //0.5秒毎に点滅
+    if ((millis() & 768) == 256){
       digitalWrite(LED_RECEIVE_PIN, HIGH);
     }else{
       digitalWrite(LED_RECEIVE_PIN, LOW);
     }
     
   }
-  if(topc.available()>=3){
+  while (topc.available() >= 1 && packc < 3){
+    //データが溜まっている
+    packs[packc] = topc.read();
+    packc += 1;
+
+  }
+  if(packc == 3){
     // 3バイトのコマンドを受け取ります
     s=1;
-    digitalWrite(LED_RECEIVE_PIN, HIGH);
-    dh = topc.read();
-    da = topc.read();
-    dd = topc.read();
+    dh = packs[0];
+    da = packs[1];
+    dd = packs[2];
+    packc = 0;
+    
     csum = (( (da & 0xF0) >> 4) + (da & 0x0F) + ( (dd & 0xF0) >> 4) + (dd & 0x0F)) & 0x0F;
     if ((dh & 0x0F) == csum){
       cpack += 1;
+      digitalWrite(LED_RECEIVE_PIN, LOW);
     }else{
       cerrpack += 1;
+      digitalWrite(LED_RECEIVE_PIN, HIGH);
     }
     dmx_master.setChannelValue (da, dd);      
-    digitalWrite(LED_RECEIVE_PIN, LOW);
-  }else{
+  }else if(lcdmestype != 128){
     // パケットが溜まってない周ではLCDの処理をする
     if(lcdmestime <= millis()){
       //------------------------
@@ -104,7 +115,7 @@ void loop() {
         lcd.setCursor(0, 0);
         lcd.print("VERSION ");
         lcd.setCursor(0, 1);
-        lcd.print("20231203");
+        lcd.print("20231208");
         lcdmestime = lcdmestime + 2000;
         lcdmestype = 3;
         
@@ -118,40 +129,48 @@ void loop() {
         
       }else if(lcdmestype == 4){
         lcd.setCursor(0, 0);
-        lcd.print("CONTACT:");
+        lcd.print("GITHUB.C");
         lcd.setCursor(0, 1);
-        lcd.print(" GITHUB.");
+        lcd.print("OM/NASTT");
         lcdmestime = lcdmestime + 2000;
         lcdmestype = 5;
         
       }else if(lcdmestype == 5){
         lcd.setCursor(0, 0);
-        lcd.print("COM/NAST");
+        lcd.print("YMAIN/SE");
         lcd.setCursor(0, 1);
-        lcd.print("TYMAIN  ");
+        lcd.print("CONDLF  ");
         lcdmestime = lcdmestime + 2000;
         lcdmestype = 127;
-        
+
       }else if(lcdmestype == 127){
+        lcd.clear();
+        lcdmestype = 128;
+      /*
+      //実験の結果、LCD表示が所要時間が長く動作を不安定化させている可能性が高いため、この部分は使用しない。
+      }else if(lcdmestype == 112){
         if(cpack >= 10000){
           cpack -= 10000;
         }
         if(cerrpack >= 10000){
           cerrpack -= 10000;
         }
-        
+        snprintf(vbuf, 6, "%.4u ", cpack);
+        snprintf(vebuf, 6, "%.4u ", cerrpack);
+        lcdmestime = lcdmestime + 375;
+        lcdmestype = 113;
+      }else if(lcdmestype == 113){
         lcd.setCursor(0, 0);
         lcd.print("OK: ");
         lcd.setCursor(3, 0);
-        snprintf(vbuf, 6, "%.4u ", cpack);
         lcd.print(vbuf);
         lcd.setCursor(0, 1);
         lcd.print("ER: ");
         lcd.setCursor(3, 1);
-        snprintf(vbuf, 6, "%.4u ", cerrpack);
-        lcd.print(vbuf);
-        lcdmestime = lcdmestime + 500;
-        lcdmestype = 127;
+        lcd.print(vebuf);
+        lcdmestime = lcdmestime + 375;
+        lcdmestype = 112;
+      */
       }
       //------------------------
     }
