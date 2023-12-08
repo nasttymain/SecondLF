@@ -86,15 +86,23 @@ void loop() {
     dd = packs[2];
     packc = 0;
     
-    csum = (( (da & 0xF0) >> 4) + (da & 0x0F) + ( (dd & 0xF0) >> 4) + (dd & 0x0F)) & 0x0F;
-    if ((dh & 0x0F) == csum){
-      cpack += 1;
-      digitalWrite(LED_RECEIVE_PIN, LOW);
+    if(dh == 255){
+      // dh = 0xFFはリセットコマンド。1ズラして待つ。FFを数回連続して送った後にデータを続けて送信すると、パケット境界がアラインされる
+      packs[0] = packs[1];
+      packs[1] = packs[2];
+      packc = 2;
     }else{
-      cerrpack += 1;
-      digitalWrite(LED_RECEIVE_PIN, HIGH);
+      csum = (( (da & 0xF0) >> 4) + (da & 0x0F) + ( (dd & 0xF0) >> 4) + (dd & 0x0F)) & 0x0F;
+      if ((dh & 0x0F) == csum){
+        cpack += 1;
+        digitalWrite(LED_RECEIVE_PIN, LOW);
+      }else{
+        cerrpack += 1;
+        digitalWrite(LED_RECEIVE_PIN, HIGH);
+      }
+      dmx_master.setChannelValue (da, dd);      
     }
-    dmx_master.setChannelValue (da, dd);      
+
   }else if(lcdmestype != 128){
     // パケットが溜まってない周ではLCDの処理をする
     if(lcdmestime <= millis()){
