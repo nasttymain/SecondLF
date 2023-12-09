@@ -45,11 +45,21 @@ IF NOT %ERRORLEVEL%==0 GOTO PIP_ERROR
 python -m pip install pygame
 IF NOT %ERRORLEVEL%==0 GOTO PIP_ERROR
 
+GOTO PIP_SUCCEED
+
+:PIP_ERROR
+ECHO (E4) pip install に失敗しました
+PAUSE
+EXIT /B
+
+:PIP_SUCCEED
+python makeportconfig.py
+IF NOT %ERRORLEVEL%==0 GOTO PYSET_ERROR
 ECHO (SC) セットアップが完了しました
 PAUSE
 EXIT /B
 
-:PIP_ERROR
-ECHO (E4) pip installに失敗しました
+:PYSET_ERROR
+ECHO (E5) pyset.py が失敗しました
 PAUSE
 EXIT /B

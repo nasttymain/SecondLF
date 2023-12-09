@@ -1,115 +1,255 @@
 {
-    "deviceconf": {
-        "physicallight": {
-            "driver": "abdmxraw",
-            "option": {"port": 5}
-        },
-        "logicaldevices":[
-            {
-                "name": "LED L-L",
-                "driver": "rgb",
-                "mode": [8, 3],
-                "option": {}
-            },
-            {
-                "name": "LED L-R",
-                "driver": "rgb",
-                "mode": [12, 3],
-                "option": {}
-            },
-            {
-                "name": "LED R-L",
-                "driver": "rgb",
-                "mode": [16, 3],
-                "option": {}
-            },
-            {
-                "name": "LED R-R",
-                "driver": "rgb",
-                "mode": [20, 3],
-                "option": {}
-            },
-            {
-                "name": "LED F-L",
-                "driver": "rgb",
-                "mode": [24, 3],
-                "option": {}
-            },
-            {
-                "name": "LED F-R",
-                "driver": "rgb",
-                "mode": [28, 3],
-                "option": {}
-            },
-            {
-                "name": "TSIG L",
-                "driver": "rgb4",
-                "mode": [80, 12],
-                "option": {}
-            },
-            {
-                "name": "TSIG R",
-                "driver": "rgb4",
-                "mode": [96, 12],
-                "option": {}
-            },
-            {
-                "name": "DEKKER",
-                "driver": "minimirror",
-                "mode": [65, 12],
-                "option": {}
-            }
-        ]
+  "deviceconf": {
+    "physicallight": {
+      "driver": "abdmxraw",
+      "option": {
+        "port": "5"
+      }
     },
-    "controller": {
-        "keybd-modname": "keybdsettings",
-        "fader-tickrate": 48,
-        "power-save-mode": "auto",
-        "primary-controller": {
-            "driver": "primary"
-        }
-    },
-    "keybdbinds": [
-        {"charcode": "1", "command": "color.toggle #FF0000 1"},
-        {"charcode": "2", "command": "color.toggle #33FF33 2"},
-        {"charcode": "3", "command": "color.toggle #0000FF 3"},
-        {"charcode": "4", "command": "color.toggle #FFFFFF 4"},
-        {"charcode": "5", "command": "color.toggle #FF88AA 5"},
-        {"charcode": "6", "command": "color.toggle #55FFFF 6"},
-        {"charcode": "Q", "command": "color.toggle #7788FF Q"},
-        {"charcode": "W", "command": "color.toggle #00FFFF W"},
-        {"charcode": "E", "command": "color.toggle #9922FF E"},
-        {"charcode": "R", "command": "color.toggle #FF6611 R"},
-        {"charcode": "T", "command": "color.toggle #FFFF33 T"},
-        {"charcode": "Y", "command": "color.toggle #FF00FF Y"},
-        {"scancode": 46 , "command": "color.toggle #000000 ^"},
-        {"charcode": "Z", "command": "beats.align"},
-        {"scancode": 40 , "command": "color.blackout.toggle"},
-        {"scancode": 81 , "command": "bpm.decrease 1"},
-        {"scancode": 82 , "command": "bpm.increase 1"},
-        {"scancode": 78 , "command": "bpm.decrease 10"},
-        {"scancode": 75 , "command": "bpm.increase 10"},
-        {"scancode": 80 , "command": "pattern.fader.decrease 0.1"},
-        {"scancode": 79 , "command": "pattern.fader.increase 0.1"},
-        {"scancode": 58 , "command": "pattern.bank.set 0"},
-        {"scancode": 59 , "command": "pattern.bank.set 1"},
-        {"scancode": 60 , "command": "pattern.bank.set 2"},
-        {"scancode": 61 , "command": "pattern.bank.set 3"},
-        {"scancode": 62 , "command": "pattern.bank.set 4"},
-        {"scancode": 63 , "command": "pattern.bank.set 5"},
-        {"scancode": 64 , "command": "pattern.bank.set 6"},
-        {"scancode": 65 , "command": "pattern.bank.set 7"},
-        {"scancode": 42 , "command": "color.clear"},
-        {"scancode": 68 , "command": "color.brightness.settarget 128"},
-        {"scancode": 69 , "command": "color.brightness.settarget 255"},
-        {"scancode": 52 , "command": "bpm.half"},
-        {"scancode": 49 , "command": "bpm.double"},
-
-        {"scancode": 54 , "command": "bpm.set 40;pattern.fader.set 0.1;color.clear;color.toggle #FFFFFF P1;color.toggle #0000FF P2;color.toggle #FFFFFF P3;color.toggle #FF00FF P4;pattern.bank.set 2"},
-        {"scancode": 55 , "command": "bpm.set 40;pattern.fader.set 0.1;color.clear;color.toggle #FFFFFF P1;color.toggle #FF0000 P2;color.toggle #FFFFFF P3;color.toggle #FF00FF P4;pattern.bank.set 2"},
-        {"scancode": 56 , "command": "bpm.set 40;pattern.fader.set 0.1;color.clear;color.toggle #00FFFF P1;color.toggle #FFFF00 P2;color.toggle #FF2255 P3;color.toggle #FF00FF P4;pattern.bank.set 2"},
-        {"scancode": 76 , "command": "bpm.set 120;pattern.fader.set 0.5"}
+    "logicaldevices": [
+      {
+        "name": "LED L-L",
+        "driver": "rgb",
+        "mode": [
+          8,
+          3
+        ],
+        "option": {}
+      },
+      {
+        "name": "LED L-R",
+        "driver": "rgb",
+        "mode": [
+          12,
+          3
+        ],
+        "option": {}
+      },
+      {
+        "name": "LED R-L",
+        "driver": "rgb",
+        "mode": [
+          16,
+          3
+        ],
+        "option": {}
+      },
+      {
+        "name": "LED R-R",
+        "driver": "rgb",
+        "mode": [
+          20,
+          3
+        ],
+        "option": {}
+      },
+      {
+        "name": "LED F-L",
+        "driver": "rgb",
+        "mode": [
+          24,
+          3
+        ],
+        "option": {}
+      },
+      {
+        "name": "LED F-R",
+        "driver": "rgb",
+        "mode": [
+          28,
+          3
+        ],
+        "option": {}
+      },
+      {
+        "name": "TSIG L",
+        "driver": "rgb4",
+        "mode": [
+          80,
+          12
+        ],
+        "option": {}
+      },
+      {
+        "name": "TSIG R",
+        "driver": "rgb4",
+        "mode": [
+          96,
+          12
+        ],
+        "option": {}
+      },
+      {
+        "name": "DEKKER",
+        "driver": "minimirror",
+        "mode": [
+          65,
+          12
+        ],
+        "option": {}
+      }
     ]
-
-
+  },
+  "controller": {
+    "keybd-modname": "keybdsettings",
+    "fader-tickrate": 48,
+    "power-save-mode": "auto",
+    "primary-controller": {
+      "driver": "primary"
+    }
+  },
+  "keybdbinds": [
+    {
+      "charcode": "1",
+      "command": "color.toggle #FF0000 1"
+    },
+    {
+      "charcode": "2",
+      "command": "color.toggle #33FF33 2"
+    },
+    {
+      "charcode": "3",
+      "command": "color.toggle #0000FF 3"
+    },
+    {
+      "charcode": "4",
+      "command": "color.toggle #FFFFFF 4"
+    },
+    {
+      "charcode": "5",
+      "command": "color.toggle #FF88AA 5"
+    },
+    {
+      "charcode": "6",
+      "command": "color.toggle #55FFFF 6"
+    },
+    {
+      "charcode": "Q",
+      "command": "color.toggle #7788FF Q"
+    },
+    {
+      "charcode": "W",
+      "command": "color.toggle #00FFFF W"
+    },
+    {
+      "charcode": "E",
+      "command": "color.toggle #9922FF E"
+    },
+    {
+      "charcode": "R",
+      "command": "color.toggle #FF6611 R"
+    },
+    {
+      "charcode": "T",
+      "command": "color.toggle #FFFF33 T"
+    },
+    {
+      "charcode": "Y",
+      "command": "color.toggle #FF00FF Y"
+    },
+    {
+      "scancode": 46,
+      "command": "color.toggle #000000 ^"
+    },
+    {
+      "charcode": "Z",
+      "command": "beats.align"
+    },
+    {
+      "scancode": 40,
+      "command": "color.blackout.toggle"
+    },
+    {
+      "scancode": 81,
+      "command": "bpm.decrease 1"
+    },
+    {
+      "scancode": 82,
+      "command": "bpm.increase 1"
+    },
+    {
+      "scancode": 78,
+      "command": "bpm.decrease 10"
+    },
+    {
+      "scancode": 75,
+      "command": "bpm.increase 10"
+    },
+    {
+      "scancode": 80,
+      "command": "pattern.fader.decrease 0.1"
+    },
+    {
+      "scancode": 79,
+      "command": "pattern.fader.increase 0.1"
+    },
+    {
+      "scancode": 58,
+      "command": "pattern.bank.set 0"
+    },
+    {
+      "scancode": 59,
+      "command": "pattern.bank.set 1"
+    },
+    {
+      "scancode": 60,
+      "command": "pattern.bank.set 2"
+    },
+    {
+      "scancode": 61,
+      "command": "pattern.bank.set 3"
+    },
+    {
+      "scancode": 62,
+      "command": "pattern.bank.set 4"
+    },
+    {
+      "scancode": 63,
+      "command": "pattern.bank.set 5"
+    },
+    {
+      "scancode": 64,
+      "command": "pattern.bank.set 6"
+    },
+    {
+      "scancode": 65,
+      "command": "pattern.bank.set 7"
+    },
+    {
+      "scancode": 42,
+      "command": "color.clear"
+    },
+    {
+      "scancode": 68,
+      "command": "color.brightness.settarget 128"
+    },
+    {
+      "scancode": 69,
+      "command": "color.brightness.settarget 255"
+    },
+    {
+      "scancode": 52,
+      "command": "bpm.half"
+    },
+    {
+      "scancode": 49,
+      "command": "bpm.double"
+    },
+    {
+      "scancode": 54,
+      "command": "bpm.set 40;pattern.fader.set 0.1;color.clear;color.toggle #FFFFFF P1;color.toggle #0000FF P2;color.toggle #FFFFFF P3;color.toggle #FF00FF P4;pattern.bank.set 2"
+    },
+    {
+      "scancode": 55,
+      "command": "bpm.set 40;pattern.fader.set 0.1;color.clear;color.toggle #FFFFFF P1;color.toggle #FF0000 P2;color.toggle #FFFFFF P3;color.toggle #FF00FF P4;pattern.bank.set 2"
+    },
+    {
+      "scancode": 56,
+      "command": "bpm.set 40;pattern.fader.set 0.1;color.clear;color.toggle #00FFFF P1;color.toggle #FFFF00 P2;color.toggle #FF2255 P3;color.toggle #FF00FF P4;pattern.bank.set 2"
+    },
+    {
+      "scancode": 76,
+      "command": "bpm.set 120;pattern.fader.set 0.5"
+    }
+  ]
 }
