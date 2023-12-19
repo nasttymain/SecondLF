@@ -49,6 +49,7 @@ def app_init() -> None:
             "scancodelist": [],
             "commandlist": [],
         }
+
         for kbcnt, kb in enumerate(a.appconf["keybdbinds"]):
             if "charcode" in kb.keys():
                 a.keyconf["charcodelist"].append(kb["charcode"])
@@ -61,7 +62,29 @@ def app_init() -> None:
             if "command" in kb.keys():
                 a.keyconf["commandlist"].append(kb["command"])
             else:
-                a.keyconf["commandlist"].append(None)
+                a.keyconf["commandlist"].append("")
+        
+        if "terminal" in a.appconf["controller"].keys():
+            if a.appconf["controller"]["terminal"] in ["fullcolor", "palcolor"]:
+                print("[SecondLF] List of keyboard-bound colors are:")
+                for kbcnt, kb in enumerate(a.appconf["keybdbinds"]):
+                    if "command" in kb.keys():
+                        if "charcode" in kb.keys() and kb["command"].split(" ")[0].upper() == "COLOR.TOGGLE":
+                            cl = kb["command"].split(" ")[1]
+                            if cl.startswith("#"):
+                                try:
+                                    cl = int("0x" + cl[1:], 16)
+                                except ValueError as e:
+                                    cl = 0
+                            else:
+                                try:
+                                    cl = int(cl)
+                                except ValueError as e:
+                                    cl = 0
+                            print("\x1b[48;2;" + str(cl // 65536) + ";" + str(cl % 65536 // 256) + ";" + str(cl % 256) + "m", end="")
+                            print(" " + kb["charcode"] + " ", end="")
+                            print("\x1b[0m ", end="")
+                print("\x1b[0m")
             
         a.devconf = a.appconf["deviceconf"]
         a.physidev_conf = a.devconf["physicallight"]

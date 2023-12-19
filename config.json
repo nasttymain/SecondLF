@@ -96,7 +96,8 @@
     "power-save-mode": "auto",
     "primary-controller": {
       "driver": "primary"
-    }
+    },
+    "terminal": "fullcolor"
   },
   "keybdbinds": [
     {
@@ -105,50 +106,42 @@
     },
     {
       "charcode": "2",
-      "command": "color.toggle #33FF33 2"
+      "command": "color.toggle #FF6600 2"
     },
     {
       "charcode": "3",
-      "command": "color.toggle #0000FF 3"
+      "command": "color.toggle #FFFF00 3"
     },
     {
       "charcode": "4",
-      "command": "color.toggle #FFFFFF 4"
+      "command": "color.toggle #00FF00 4"
     },
     {
       "charcode": "5",
-      "command": "color.toggle #FF88AA 5"
+      "command": "color.toggle #00FFFF 5"
     },
     {
       "charcode": "6",
-      "command": "color.toggle #55FFFF 6"
+      "command": "color.toggle #0000FF 6"
     },
     {
-      "charcode": "Q",
-      "command": "color.toggle #7788FF Q"
+      "charcode": "7",
+      "command": "color.toggle #BB00FF 7"
     },
     {
-      "charcode": "W",
-      "command": "color.toggle #00FFFF W"
+      "charcode": "8",
+      "command": "color.toggle #FF00BB 8"
     },
     {
-      "charcode": "E",
-      "command": "color.toggle #9922FF E"
+      "charcode": "0",
+      "command": "color.toggle #FFFFFF 0"
     },
     {
-      "charcode": "R",
-      "command": "color.toggle #FF6611 R"
+      "charcode": "-",
+      "command": "color.toggle #FF66AA -"
     },
     {
-      "charcode": "T",
-      "command": "color.toggle #FFFF33 T"
-    },
-    {
-      "charcode": "Y",
-      "command": "color.toggle #FF00FF Y"
-    },
-    {
-      "scancode": 46,
+      "charcode": "^",
       "command": "color.toggle #000000 ^"
     },
     {

@@ -25,7 +25,7 @@ DOSKEY PYTHON=PYTHON3
 GOTO STARTBAT_SET
 
 :STARTBAT_SET
-python -c "import sys;sys.exit(0 if (sys.version_info[0]==3 and sys.version_info[1] >= 8) else 2)"
+python -c "import sys;sys.exit(0 if (sys.version_info[0]==3 and sys.version_info[1] >= 9) else 2)"
 IF %ERRORLEVEL%==0 GOTO PYTHON_VER_CONFIRMED
 
 ECHO (E2) Python のバージョンが適合しません
