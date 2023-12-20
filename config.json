@@ -130,15 +130,15 @@
     },
     {
       "charcode": "8",
-      "command": "color.toggle #FF00BB 8"
+      "command": "color.toggle #FF00DD 8"
+    },
+    {
+      "charcode": "9",
+      "command": "color.toggle #FF66AA 9"
     },
     {
       "charcode": "0",
       "command": "color.toggle #FFFFFF 0"
-    },
-    {
-      "charcode": "-",
-      "command": "color.toggle #FF66AA -"
     },
     {
       "charcode": "^",
