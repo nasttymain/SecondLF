@@ -208,7 +208,7 @@ class primary_driver:
                 for acnt, attr in enumerate(self.listattr):
                     if attr <= 0:
                         self.listattr[acnt] = random.randint(1, 4)
-                        if random.random() > 0.3:
+                        if random.random() > 0.6:
                             cc = self.color[int(timestamp) // 4 % len(self.color)]
                         else:
                             cc = random.sample(self.color, k = 1)[0]
