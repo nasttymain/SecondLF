@@ -243,6 +243,10 @@
     {
       "scancode": 76,
       "command": "bpm.set 120;pattern.fader.set 0.5"
+    },
+    {
+      "scancode": 41,
+      "command": "console"
     }
   ]
 }

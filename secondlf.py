@@ -9,7 +9,7 @@ import tkinter.filedialog
 import tkinter.simpledialog
 
 
-#まだマシ
+#関数間でデータ交換するためのゴッドオブジェクト(つまりゴミ)
 class lfapp_struct():
     def __init__(self) -> None:
         self.controller_app_conf: dict = None
@@ -29,6 +29,7 @@ class lfapp_struct():
         self.profile_conf: dict = dict()
         self.profile_state: dict = {"avail": 0, "filename": "", "page": 0, "screenname": ""}
 
+# 設定ファイルのロードと各モジュールの初期化
 def app_init() -> None:
     g.logmesonscreen = 1
     g.color(64, 64, 64)
@@ -143,7 +144,7 @@ def app_init() -> None:
             g.logmes(t, errorlevel = 2)
         globals()["errorflag"] += 1
 
-
+# 画面の再描画
 def app_draw_screen() -> None:
     fontsize = a.controller_app_conf["font-size"]
     g.cls(0)
@@ -417,23 +418,30 @@ def app_brightness_fader_tick():
 
 
 def app_proc_keydown(keyunicode: str, keyscancode: int) -> None:
-    print("[slf] event KEYDOWN:", keyscancode, keyunicode)
-
-    #プロファイルのページキーは決め打ちします
+    print("[slf] event KEYDOWN:", keyscancode, keyunicode, "for", a.controller_app_state["key-receiver-function"].__name__)
+    a.controller_app_state["key-receiver-function"](keyunicode, keyscancode)
+    
+    
+def keydown_proc_live(keyunicode: str, keyscancode: int) -> None:
+    # プロファイルのページキーは決め打ちします
     if keyscancode == 13:
-        #J: EVEN
+        # J: EVEN
         app_proc_command("PROFILE.PAGE.NEXT_FROM_EVEN")
     elif keyscancode == 15:
-        #L: ODD
+        # L: ODD
         app_proc_command("PROFILE.PAGE.NEXT_FROM_ODD")
     else:
+        # KEYCONFにヒットするエントリーがあるか検索します
         if keyunicode.upper() in a.keyconf["charcodelist"]:
+            # charcode に一致エントリあり
             app_proc_command(a.keyconf["commandlist"][a.keyconf["charcodelist"].index(keyunicode.upper())])
         if keyscancode in a.keyconf["scancodelist"]:
+            # scancode に一致エントリあり
             app_proc_command(a.keyconf["commandlist"][a.keyconf["scancodelist"].index(keyscancode)])
         if "key_down_scan" + str(keyscancode) in dir(a.controller_app_conf["keybd-handler"]): 
             getattr(a.controller_app_conf["keybd-handler"], "key_down_scan" + str(keyscancode))(a, app_proc_command)
         elif keyunicode != "" and keyunicode != None:
+            # keyboard-handlerクラスに一致エントリあり
             if "key_down_" + str(keyunicode.upper()) in dir(a.controller_app_conf["keybd-handler"]):
                 getattr(a.controller_app_conf["keybd-handler"], "key_down_" + str(keyunicode.upper()))(a, app_proc_command)
 
@@ -552,6 +560,11 @@ def app_proc_command(commands: str) -> any:
                     app_proc_command("PROFILE.PAGE.APPLY")
             else:
                 g.logmes("[slf] Unknown command " + token[0], 2)
+        elif token[0] == "CONSOLE":
+                command = tkinter.simpledialog.askstring("console", "Command? :", initialvalue="")
+                if command != None:
+                    app_proc_command(command)
+                command = ""
         else:
             g.logmes("[slf] Unknown command " + token[0], 2)
         a.controller_app_state["primary-fader"] = max(decimal.Decimal(0.0), a.controller_app_state["primary-fader"])
@@ -631,6 +644,8 @@ if __name__ == "__main__":
     a.controller_app_state["brightness-fader-target"] = 255
     a.controller_app_state["brightness-fader-lasttime"] = 0
     a.controller_app_state["brightness-fader-interval"] = 7
+    a.controller_app_state["key-receiver-function"] = keydown_proc_live
+    a.controller_app_state["drawer-function"] = None
     # ↑ 100msあたりの変化量
     g = sgpg.sgpg()
     g.screen(0, 800, 500, 32)
