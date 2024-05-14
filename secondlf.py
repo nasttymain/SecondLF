@@ -12,20 +12,20 @@ import tkinter.simpledialog
 #関数間でデータ交換するためのゴッドオブジェクト(つまりゴミ)
 class lfapp_struct():
     def __init__(self) -> None:
-        self.controller_app_conf: dict = None
+        self.controller_app_conf: dict = dict()
         self.controller_app_state: dict = dict()
-        self.appconf: dict = None
-        self.devconf: dict = None
+        self.appconf: dict = dict()
+        self.devconf: dict = dict()
         self.beatdev_obj: object = None
-        self.physidev_conf: dict = None
-        self.logidev_conf: dict = None
-        self.physidev_conf: dict = None
+        self.physidev_conf: dict = dict()
+        self.logidev_conf: dict = dict()
+        self.physidev_conf: dict = dict()
         self.physidev_mod: object = None
         self.physidev_obj: object = None
         self.logidev_obj: object = None
         self.primdev_obj: object = None
         self.primdev_conf: object = None
-        self.keyconf: dict = None
+        self.keyconf: dict = dict()
         self.profile_conf: dict = dict()
         self.profile_state: dict = {"avail": 0, "filename": "", "page": 0, "screenname": ""}
 
@@ -40,7 +40,7 @@ def app_init() -> None:
         a.beatdev_obj = importlib.import_module("vulcbeat").beatmanager()
         g.logmes("[slf]Initialized vulcbeat beat manager")
 
-        a.appconf = None
+        a.appconf = dict()
         with open("config.json", "r") as f:
             pass
             a.appconf = json.load(f)
@@ -324,8 +324,10 @@ def app_draw_screen() -> None:
                     n = "NOT FOUND (OR EOF)"
                 g.text("NEXT [ " + ["J", "L"][a.profile_state["page"] % 2] + " ]", 1)
                 g.pos_shiftf(0.15, 0.0)
+                g.rgbcolor(0x666666)
                 g.text(n)
 
+        g.rgbcolor(a.controller_app_conf["ui-text-color"])
         g.align("left")
         g.posf(0.6, 0.6)
         g.pos_shiftf(0.0, 0.10)
@@ -335,6 +337,7 @@ def app_draw_screen() -> None:
         g.posf(0.6, 0.6)
         g.pos_shiftf(0.0, 0.15)
         g.text("NOW", 1)
+        g.rgbcolor(0xFF4444)
         if str(a.profile_state["page"]) in a.profile_conf["pages"]:
             g.posf(0.6, 0.6)
             g.pos_shiftf(0.15, 0.15)
@@ -344,12 +347,14 @@ def app_draw_screen() -> None:
                 g.text("-----")
             g.posf(0.6, 0.6)
             g.pos_shiftf(0.15, 0.20)
+            g.rgbcolor(0x666666)
             if "commands" in a.profile_conf["pages"][str(a.profile_state["page"])]:
                 for t in a.profile_conf["pages"][str(a.profile_state["page"])]["commands"].split(sep=";"):
                     g.text(t)
             else:
                 g.text("-----")
     
+    g.rgbcolor(a.controller_app_conf["ui-text-color"])
     g.box(g.ginfo("sx") * 0.85, g.ginfo("sy") * 0.95 - 2, g.ginfo("sx") * 0.95, g.ginfo("sy") * 0.95 + fontsize + 2)
     g.align("center")
     g.pos(g.ginfo("sx") * 0.9, g.ginfo("sy") * 0.95 + fontsize // 2)
@@ -405,7 +410,9 @@ def app_proc_tick() -> None:
 
 def app_brightness_fader_tick():
     if a.controller_app_state["brightness"] != a.controller_app_state["brightness-fader-target"]:
-        if a.controller_app_state["brightness-fader-lasttime"] <= time.time_ns() // 1000000 + a.controller_app_state["brightness-fader-interval"]:
+        while a.controller_app_state["brightness-fader-lasttime"] <= time.time_ns() // 1000000 + a.controller_app_state["brightness-fader-interval"]:
+            if a.controller_app_state["brightness"] == a.controller_app_state["brightness-fader-target"]:
+                break
             a.controller_app_state["brightness-fader-lasttime"] += a.controller_app_state["brightness-fader-interval"]
             if a.controller_app_state["brightness"] < a.controller_app_state["brightness-fader-target"]:
                 a.controller_app_state["brightness"] += 1
@@ -645,7 +652,7 @@ if __name__ == "__main__":
     a.controller_app_state["brightness"] = 255
     a.controller_app_state["brightness-fader-target"] = 255
     a.controller_app_state["brightness-fader-lasttime"] = 0
-    a.controller_app_state["brightness-fader-interval"] = 100
+    a.controller_app_state["brightness-fader-interval"] = 20
     a.controller_app_state["key-receiver-function"] = keydown_proc_live
     a.controller_app_state["drawer-function"] = None
     # ↑ 100msあたりの変化量

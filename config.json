@@ -227,6 +227,10 @@
       "command": "pattern.bank.set 7"
     },
     {
+      "scancode": 66,
+      "command": "pattern.bank.set 101"
+    },
+    {
       "scancode": 42,
       "command": "color.clear"
     },
