@@ -494,6 +494,8 @@ def app_proc_command(commands: str) -> any:
                     a.primdev_obj.startpattern()
             elif token[0] == "COLOR.BRIGHTNESS.SETTARGET":
                 a.controller_app_state["brightness-fader-target"] = int(token[1]) % 256
+            elif token[0] == "COLOR.BRIGHTNESS.SETINTERVAL":
+                a.controller_app_state["brightness-fader-interval"] = int(token[1])
             else:
                 g.logmes("[slf] Unknown command " + token[0], 2)
         elif token[0].startswith("BPM."):
@@ -643,7 +645,7 @@ if __name__ == "__main__":
     a.controller_app_state["brightness"] = 255
     a.controller_app_state["brightness-fader-target"] = 255
     a.controller_app_state["brightness-fader-lasttime"] = 0
-    a.controller_app_state["brightness-fader-interval"] = 7
+    a.controller_app_state["brightness-fader-interval"] = 100
     a.controller_app_state["key-receiver-function"] = keydown_proc_live
     a.controller_app_state["drawer-function"] = None
     # ↑ 100msあたりの変化量

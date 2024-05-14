@@ -62,6 +62,24 @@
         "option": {}
       },
       {
+        "name": "LED F-LL",
+        "driver": "rgb",
+        "mode": [
+          32,
+          3
+        ],
+        "option": {}
+      },
+      {
+        "name": "LED F-RR",
+        "driver": "rgb",
+        "mode": [
+          36,
+          3
+        ],
+        "option": {}
+      },
+      {
         "name": "TSIG L",
         "driver": "rgb4",
         "mode": [
