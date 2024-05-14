@@ -6,6 +6,8 @@
         ["LED R-R", "color"],
         ["LED F-L", "color"],
         ["LED F-R", "color"],
+        ["LED F-LL", "color"],
+        ["LED F-RR", "color"],
         ["TSIG L", "color1"],
         ["TSIG L", "color2"],
         ["TSIG L", "color3"],

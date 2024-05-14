@@ -42,7 +42,7 @@ class primary_driver:
     def apiver(self) -> int:
         return 1
     def info(self) -> str:
-        return "(C)2023 /\/asTTY\nThe primary driver.\nUse primaryconf.json to add/remove devices and change actions."
+        return "(C)2023 /\\/asTTY\nThe primary driver.\nUse primaryconf.json to add/remove devices and change actions."
     def bankinfo(self) -> str:
         sl = [
             "F1 2022互換",
@@ -69,12 +69,15 @@ class primary_driver:
     def startpattern(self) -> None:
         self.beatdev_obj.clear_all_callback_on_beat()
         if self.program_bank in [0, 1, 2]:
+            # 2022、MIRROR、ALLON
             for t in range(4):
                 self.beatdev_obj.set_callback_on_beat(float(t), self.timing_callback)
         elif self.program_bank in [3, 4]:
+            # FLASH POLYGON
             for t in [tn * 0.2 for tn in range(0, 20)]:
                 self.beatdev_obj.set_callback_on_beat(t, self.timing_callback)
         elif self.program_bank in [5]:
+            # RANDOM
             self.listattr = [0 for _ in self.colorslist]
             for t in [tn * 0.5 for tn in range(0, 8)]:
                 self.beatdev_obj.set_callback_on_beat(t, self.timing_callback)
@@ -82,9 +85,11 @@ class primary_driver:
                 for cl in self.colorslist:
                     self.callback(cl[0], cl[1], random.sample(self.color, k = 1)[0], 0.0)
         elif self.program_bank in [6]:
+            # BEAT 1 & 3
             for t in range(0, 4, 2):
                 self.beatdev_obj.set_callback_on_beat(t, self.timing_callback)
         elif self.program_bank in [7]:
+            # RANDOM ROUND
             for t in [tn * 0.2 for tn in range(0, 20)]:
                 self.beatdev_obj.set_callback_on_beat(t, self.timing_callback)
             if self.color == []:
