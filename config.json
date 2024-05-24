@@ -44,7 +44,7 @@
         "option": {}
       },
       {
-        "name": "LED F-L",
+        "name": "LED L-F",
         "driver": "rgb",
         "mode": [
           24,
@@ -53,7 +53,7 @@
         "option": {}
       },
       {
-        "name": "LED F-R",
+        "name": "LED R-F",
         "driver": "rgb",
         "mode": [
           28,
@@ -62,7 +62,7 @@
         "option": {}
       },
       {
-        "name": "LED F-LL",
+        "name": "LED L-FL",
         "driver": "rgb",
         "mode": [
           32,
@@ -71,7 +71,7 @@
         "option": {}
       },
       {
-        "name": "LED F-RR",
+        "name": "LED R-FR",
         "driver": "rgb",
         "mode": [
           36,

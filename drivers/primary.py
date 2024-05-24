@@ -45,14 +45,15 @@ class primary_driver:
         return "(C)2023 /\\/asTTY\nThe primary driver.\nUse primaryconf.json to add/remove devices and change actions."
     def bankinfo(self) -> str:
         sl = [
-            "F1 2022互換",
-            "F2 2022互換 - ミラーのみ",
-            "F3 2022互換 - オールオン",
-            "F4 色点滅",
-            "F5 ポリゴンショック",
-            "F6 ランダムタイミング・ランダムカラー",
-            "F7 2拍・ランダムカラー",
-            "F8 ランダムフェーズ・シーケンスカラー"
+            "0 F1 2022互換",
+            "1 F2 2022互換 - ミラーのみ",
+            "2 F3 2022互換 - オールオン",
+            "3 F4 色点滅",
+            "4 F5 ポリゴンショック",
+            "5 F6 ランダムタイミング・ランダムカラー",
+            "6 F7 2拍・ランダムカラー",
+            "7 F8 ランダムフェーズ・シーケンスカラー"
+            "8 (割当無) 1拍毎に左右(May 2024)"
         ]
         if self.program_bank < len(sl):
             return sl[self.program_bank]
@@ -96,7 +97,10 @@ class primary_driver:
                 self.listattr = [[0, 0] for _ in self.colorslist]
             else:
                 self.listattr = [[random.randint(0, len(self.color) - 1), random.randint(0, self.pattern7_shifttime - 1)] for _ in self.colorslist]
-
+        elif self.program_bank in [8]:
+            # 左右
+            for t in range(4):
+                self.beatdev_obj.set_callback_on_beat(float(t), self.timing_callback)
 
             
         pass
@@ -254,3 +258,26 @@ class primary_driver:
                         self.listattr[clcnt][1] -= 1
                         if cl[1] <= 1:
                             self.callback(self.colorslist[clcnt][0], self.colorslist[clcnt][1], 0, self.fader * self.pattern7_shifttime)
+        elif self.program_bank == 8:
+            if self.color == []:
+                for cl in self.colorslist:
+                    self.callback(cl[0], cl[1], 0, self.fader)
+            else:
+                for clcnt, cl in enumerate(random.sample(self.colorslist, len(self.colorslist))):
+                    left = [
+                    "LED L-L",
+                    "LED L-R",
+                    "LED L-F",
+                    "LED L-FL",
+                    "TSIG L",
+                    "TSIG L",
+                    "TSIG L",
+                    "TSIG L",
+                    ]
+                    if cl[0] == "DEKKER":
+                            self.callback(cl[0], cl[1], 0, self.fader)
+                    elif (int(timestamp) % 2 == 0 and cl[0] in left) or (int(timestamp) % 2 != 0 and cl[0] not in left):
+                            self.callback(cl[0], cl[1], self.color[int(timestamp) % len(self.color)], self.fader)
+                    else:
+                            self.callback(cl[0], cl[1], 0, self.fader)
+                        
