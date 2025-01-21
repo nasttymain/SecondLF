@@ -16,11 +16,11 @@ class physical_driver:
                 self.portnumber = portnum
             except serial.serialutil.SerialException as e:
                 if loggermethod != None:
-                    loggermethod("[abdmxraw] Failed to open " + str(portnum), 1)
-                    loggermethod("[abdmxraw] Hint: Available Ports are: " + ", ".join([_.device for _ in serial.tools.list_ports.comports()]))
+                    loggermethod("[abdmxv2raw] Failed to open " + str(portnum), 1)
+                    loggermethod("[abdmxv2raw] Hint: Available Ports are: " + ", ".join([_.device for _ in serial.tools.list_ports.comports()]))
                 else:
-                    print("[abdmxraw] Failed to open COM" + str(portnum))
-                    print("[abdmxraw] Hint: Available Ports are: ", [_.device for _ in serial.tools.list_ports.comports()])
+                    print("[abdmxv2raw] Failed to open COM" + str(portnum))
+                    print("[abdmxv2raw] Hint: Available Ports are: ", [_.device for _ in serial.tools.list_ports.comports()])
                 self.portnumber = -1
         else:
             self.portnumber = -1
@@ -28,16 +28,16 @@ class physical_driver:
     def set(self, channel: int, value: int) -> None:
         if self.chval[channel] != int(value):
             if self.logoutput == 1:
-                print("[abdmxraw] set", channel, int(value))
+                print("[abdmxv2raw] set", channel, int(value))
             self.chval[channel] = int(value)
             if self.portnumber != -1:
                 self.port.write(bytearray([int(channel) % 128, int(value) % 256 // 2 + 128]))
         else:
             if self.logoutput == 1:
-                print("[abdmxraw] set", channel, int(value), "(skip)")
+                print("[abdmxv2raw] set", channel, int(value), "(skip)")
     def get(self, channel: int) -> int:
         if self.logoutput == 1:
-            print("[abdmxraw] get", channel)
+            print("[abdmxv2raw] get", channel)
         return self.chval[channel]
     def isremotecontroller(self) -> bool:
         if self.portnumber == -1:
