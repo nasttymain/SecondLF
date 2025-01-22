@@ -5,6 +5,9 @@
 
 > ジャンパワイヤをハンダ付けするクソ配線はもうやめてます
 
+## リンク
+[ドキュメントページ](https://nasttymain.github.io/SecondLF/)
+
 ## これは何?
 Arduino Uno + Arduino DMX Shield と PC を用いて、DMX照明を制御するためのプログラムです
 2023年より、私自身が所属する軽音楽部で運用をしています
