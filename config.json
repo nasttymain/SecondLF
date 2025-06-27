@@ -3,8 +3,11 @@
     "physicallight": {
       "driver": "abdmxraw",
       "option": {
-        "port": "5"
+        "port": "11"
       }
+    },
+    "tape": {
+      "port": "7"
     },
     "logicaldevices": [
       {
@@ -249,18 +252,6 @@
     {
       "scancode": 49,
       "command": "bpm.double"
-    },
-    {
-      "scancode": 54,
-      "command": "bpm.set 40;pattern.fader.set 0.1;color.clear;color.toggle #FFFFFF P1;color.toggle #0000FF P2;color.toggle #FFFFFF P3;color.toggle #FF00FF P4;pattern.bank.set 2"
-    },
-    {
-      "scancode": 55,
-      "command": "bpm.set 40;pattern.fader.set 0.1;color.clear;color.toggle #FFFFFF P1;color.toggle #FF0000 P2;color.toggle #FFFFFF P3;color.toggle #FF00FF P4;pattern.bank.set 2"
-    },
-    {
-      "scancode": 56,
-      "command": "bpm.set 40;pattern.fader.set 0.1;color.clear;color.toggle #00FFFF P1;color.toggle #FFFF00 P2;color.toggle #FF2255 P3;color.toggle #FF00FF P4;pattern.bank.set 2"
     },
     {
       "scancode": 76,

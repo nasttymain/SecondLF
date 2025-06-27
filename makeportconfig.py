@@ -29,3 +29,21 @@ else:
                     json.dump(j, f, indent=2)
                 print(str(ports[int(pn) - 1][1] + " を利用するように設定しました。"))
                 break
+
+pmax = len(ports)
+for pcnt, p in enumerate(ports):
+    print("{:2d} : {:s}".format(pcnt + 1, p[1]))
+while(True):
+    print("LEDテープ? : ", end="")
+    pn = input()
+    if pn.isnumeric():
+        if 1 <= int(pn) and int(pn) <= pmax:
+            j = None
+            with open("config.json", mode="r") as f:
+                j = json.load(f)
+                j["deviceconf"]["tape"]["port"] = ports[int(pn) - 1][0][3:]
+            with open("config.json", mode="w") as f:
+                json.dump(j, f, indent=2)
+            print(str(ports[int(pn) - 1][1] + " を利用するように設定しました。"))
+            break
+

@@ -127,6 +127,18 @@ def app_init() -> None:
 
         a.controller_app_conf["keybd-handler"] = importlib.import_module("drivers." + a.controller_app_conf["keybd-modname"]).keybdsettings()
         g.logmes("[slf] Initialized keyboard handler named \"" + a.controller_app_conf["keybd-modname"] + "\"")
+        
+        
+        # tape
+        if "tape" in a.devconf.keys():
+            if "port" in a.devconf["tape"]:
+                try:
+                    a.controller_app_state["tape-obj"].port.port = "COM" + str(a.devconf["tape"]["port"])
+                    a.controller_app_state["tape-obj"].port.open()
+                    a.controller_app_state["tape-stat-good"] = True
+                    a.controller_app_state["tape-obj"].send_reset()
+                except Exception as e:
+                    print("ERR ", e)
 
         g.neweventhandler("PG_WINDOWRESIZED", app_proc_windowresized)
         g.neweventhandler("PG_TICK", app_proc_tick)
@@ -134,7 +146,7 @@ def app_init() -> None:
         g.neweventhandler("PG_MBUTTONDOWN", app_proc_mbuttondown)
 
         g.logmes("[slf] Initialization finished :)")
-
+        
 
         app_draw_screen()
         g.logmesonscreen = 0
@@ -359,6 +371,79 @@ def app_draw_screen() -> None:
     g.align("center")
     g.pos(g.ginfo("sx") * 0.9, g.ginfo("sy") * 0.95 + fontsize // 2)
     g.text("PAGE JMP")
+    
+    # TAPE
+    g.rgbcolor(a.controller_app_conf["ui-text-color"])
+    g.align("left")
+    g.posf(0.1, 0.7)
+    g.text("TAPE", 1)
+    g.posf(0.2, 0.7)
+    if a.controller_app_state["tape-stat-good"] == False:
+        g.rgbcolor(0x888888)
+        g.text("STAT BAD")
+    else:
+        g.text(" ON" if a.controller_app_state["tape-avail"] == True else "OFF", 1)
+        g.posf(0.35, 0.7)
+        g.text("[ Z ] to toggle", 1)
+        
+    if a.controller_app_state["tape-avail"] == True:
+        g.rgbcolor(a.controller_app_conf["ui-text-color"])
+    else:
+        g.rgbcolor(0x888888)
+        
+    g.posf(0.15, 0.7)
+    g.text("\n\n")
+    g.text("STAT", 1)
+    g.posf(0.225, 0.7)
+    g.text("\n\n")
+    g.text(str(a.controller_app_state["tape-obj"].port.port) + ", " + str(a.controller_app_state["tape-obj"].port.is_open), 1)
+    
+    g.posf(0.15, 0.7)
+    g.text("\n\n\n")
+    g.text("BRT", 1)
+    g.posf(0.225, 0.7)
+    g.text("\n\n\n")
+    g.text("{0}/10".format(a.controller_app_state["tape-brt"]), 1)
+    g.posf(0.3, 0.7)
+    g.text("\n\n\n")
+    g.text("[ N ] [ M ] to UP/DOWN", 1)
+    
+    g.posf(0.15, 0.7)
+    g.text("\n\n\n\n")
+    g.text("PAT", 1)
+    g.posf(0.225, 0.7)
+    g.text("\n\n\n\n")
+    g.text(["full", "half"][a.controller_app_state["tape-ptn"]], 1)
+    g.posf(0.3, 0.7)
+    g.text("\n\n\n\n")
+    g.text("[ B ] to toggle", 1)
+    
+    g.posf(0.15, 0.7)
+    g.text("\n\n\n\n\n")
+    g.text("COLS", 1)
+    g.posf(0.225, 0.7)
+    g.text("\n\n\n\n\n")
+    
+    x = int(g.ginfo("cx")) # type: ignore
+    y = int(g.ginfo("cy")) # type: ignore
+    
+    for ccnt, c in enumerate(a.controller_app_state["tape-current-colors"][0:25]):
+        cr = c[0] * 80 // a.controller_app_state["tape-brt"]
+        cr = max(cr, 0)
+        cr = min(cr, 255)
+        
+        cg = c[1] * 80 // a.controller_app_state["tape-brt"]
+        cg = max(cg, 0)
+        cg = min(cg, 255)
+        
+        cb = c[2] * 80 // a.controller_app_state["tape-brt"]
+        cb = max(cb, 0)
+        cb = min(cb, 255)
+        
+        g.color(cr, cg, cb)
+        w = 10
+        g.fill(x + ccnt * w, y, x + (ccnt + 1) * w, y + int(a.controller_app_conf["font-size"]))
+    
 
     #ACTIVEでなかったときのオーバーレイ警告
     if g.ginfo("act") != 0:
@@ -395,6 +480,7 @@ def app_proc_tick() -> None:
     if time.time_ns() // 1000000 - a.controller_app_state["beatdev-lastticktime"] >= 1000 // a.controller_app_conf["fader-tickrate"]:
         a.controller_app_state["beatdev-lastticktime"] = time.time_ns() // 1000000
         a.beatdev_obj.tick()
+        tape_tick()
     
     if "ui-lastdrawtime" not in a.controller_app_state.keys():
         a.controller_app_state["ui-lastdrawtime"] = time.time_ns() // 1000000
@@ -437,6 +523,18 @@ def keydown_proc_live(keyunicode: str, keyscancode: int) -> None:
     elif keyscancode == 15:
         # L: ODD
         app_proc_command("PROFILE.PAGE.NEXT_FROM_ODD")
+    elif keyscancode == 29:
+        # Z: TAPE ON/oFF
+        tape_toggle()
+    elif keyscancode == 17:
+        # N: TAPE DOWN
+        tape_brt_change(-1)
+    elif keyscancode == 16:
+        # M: TAPE UP
+        tape_brt_change(1)
+    elif keyscancode == 5:
+        # B: toggle half/full
+        tape_toggle_half()
     else:
         # KEYCONFにヒットするエントリーがあるか検索します
         if keyunicode.upper() in a.keyconf["charcodelist"]:
@@ -584,6 +682,7 @@ def app_proc_command(commands: str) -> any:
         a.primdev_obj.colorset(cks)
     if a.controller_app_state["blackout"] == 1:
         a.primdev_obj.stoppattern()
+        tape_tick()
 
 def cb2v(color: int = 0, brightness: int = 255) -> int:
     return (
@@ -631,7 +730,75 @@ def app_proc_mbuttondown(mx: int|float, my: int|float) -> None:
                         app_proc_command("PROFILE.PAGE.APPLY")
     if g.ginfo("sx") * 0.85 <= mx <= g.ginfo("sx") * 0.95 and g.ginfo("sy") * 0.95 - 2 < my < g.ginfo("sy") * 0.95 + a.controller_app_conf["font-size"] + 2:
         app_proc_command("profile.askpagenum")
-                    
+                
+                
+# tape
+#
+#
+#
+def tape_toggle() -> None:
+    if a.controller_app_state["tape-avail"] == False:
+        a.controller_app_state["tape-avail"] = True
+    else:
+        a.controller_app_state["tape-avail"] = False
+def tape_brt_change(v: int) -> None:
+    a.controller_app_state["tape-brt"] += v
+    if a.controller_app_state["tape-brt"] < 1:
+        a.controller_app_state["tape-brt"] = 1
+    if a.controller_app_state["tape-brt"] > 10:
+        a.controller_app_state["tape-brt"] = 10
+def tape_tick() -> None:
+    # a.beatdev_obj.beatstamp
+    if a.controller_app_state["blackout"] == 1 or a.controller_app_state["tape-avail"] == False or len(a.controller_app_conf["light-color"].values()) == 0:
+        a.controller_app_state["tape-obj"].send_clear()
+        a.controller_app_state["tape-current-colors"] = [(0, 0, 0)] * int(a.controller_app_state["tape-count"])
+        a.controller_app_state["tape-fadebase-colors"] = []
+    else:
+        # a.controller_app_conf["light-color"]
+        
+        cols: list[tuple[int, int, int]] = [(0, 0, 0)] * int(a.controller_app_state["tape-count"])
+        for cnt in range(a.controller_app_state["tape-count"]) if (a.controller_app_state["tape-ptn"] == 0) else range(a.controller_app_state["tape-count"] // 2):
+            b: int = a.beatdev_obj.beatstamp[0] # type: ignore
+#            if a.controller_app_state["tape-ptn"] == 0:
+                #full
+            if a.controller_app_state["tape-ptn"] == 0:
+                co = (cnt + b // 4) % len(a.controller_app_conf["light-color"].values())
+            else:
+                co = (cnt + b // 4 // 2) % len(a.controller_app_conf["light-color"].values())
+            c = tuple(a.controller_app_conf["light-color"].values())[co]
+            if a.controller_app_state["tape-ptn"] == 0:
+                cols[cnt] = ( ((c // 65536) * a.controller_app_state["tape-brt"] // 10) // 8, ((c % 65536 // 256) * a.controller_app_state["tape-brt"] // 10) // 8, ((c % 256) * a.controller_app_state["tape-brt"] // 10) // 8 )
+            else:
+                cols[cnt * 2 + 1 - (b // 4) % 2] = ( ((c // 65536) * a.controller_app_state["tape-brt"] // 10) // 8, ((c % 65536 // 256) * a.controller_app_state["tape-brt"] // 10) // 8, ((c % 256) * a.controller_app_state["tape-brt"] // 10) // 8 )
+        
+        bsub: float = a.beatdev_obj.beatstamp[0] % 4 + a.beatdev_obj.beatstamp[1] # type: ignore
+        if a.beatdev_obj.beatstamp[0] // 4 != a.controller_app_state["tape-fadebase-timing"]:
+            print("Fadebase")
+            a.controller_app_state["tape-fadebase-timing"] = a.beatdev_obj.beatstamp[0] // 4
+            a.controller_app_state["tape-fadebase-colors"] = a.controller_app_state["tape-current-colors"]
+        fb: float = max( float(a.controller_app_state["primary-fader"]), 1.1 )
+        if fb > bsub and a.controller_app_state["tape-fadebase-colors"] != [] and fb != 0.0:
+            fp: float = bsub / fb
+            for ccnt, c in enumerate(cols):
+                cp: tuple[int, int, int] =  a.controller_app_state["tape-fadebase-colors"][ccnt]
+                cols[ccnt] = (
+                    int( c[0] * fp + cp[0] * (1 - fp) ),
+                    int( c[1] * fp + cp[1] * (1 - fp) ),
+                    int( c[2] * fp + cp[2] * (1 - fp) )
+                )
+                ...
+        else:
+            a.controller_app_state["tape-fadebase-colors"] = cols
+        a.controller_app_state["tape-obj"].set_colors(cols)
+        a.controller_app_state["tape-obj"].send_colors()
+        
+        a.controller_app_state["tape-current-colors"] = cols
+def tape_toggle_half() -> None:
+    a.controller_app_state["tape-ptn"] = (a.controller_app_state["tape-ptn"] + 1) % 2
+#
+# 
+#     
+
 
 #main
 if __name__ == "__main__":
@@ -655,6 +822,16 @@ if __name__ == "__main__":
     a.controller_app_state["brightness-fader-interval"] = 20
     a.controller_app_state["key-receiver-function"] = keydown_proc_live
     a.controller_app_state["drawer-function"] = None
+    a.controller_app_state["tape-avail"] = False
+    a.controller_app_state["tape-stat-good"] = False
+    a.controller_app_state["tape-brt"] = 2
+    a.controller_app_state["tape-obj"] = importlib.import_module("tape").LEDArray()
+    a.controller_app_state["tape-obj"].rgbtype = importlib.import_module("tape").RBG
+    a.controller_app_state["tape-count"] = 200
+    a.controller_app_state["tape-current-colors"] = []
+    a.controller_app_state["tape-ptn"] = 0
+    a.controller_app_state["tape-fadebase-colors"] = []
+    a.controller_app_state["tape-fadebase-timing"] = 0
     # ↑ 100msあたりの変化量
     g = sgpg.sgpg()
     g.screen(0, 800, 500, 32)
